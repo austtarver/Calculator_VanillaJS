@@ -1,3 +1,8 @@
+/*
+dont concat equation string until right before evaluate function is called.
+*/
+
+
 const btns = document.querySelectorAll('button');
 const btn = document.querySelectorAll('.btn');
 const output=document.querySelector('#output');
@@ -16,23 +21,29 @@ btns.forEach((btn) => {
             operandTwo+=btn.innerText;
             output.innerText="";
             output.innerText=operandTwo;
-            equation+=btn.innerText;
         }else if(btn.id=="operand"){
             operandOne+=btn.innerText;
             output.innerText=operandOne;
-            equation+=btn.innerText;
         }else if(output.innerText==operandOne && btn.id=="decimal"){
             operandOne+=".";
             output.innerText=operandOne;
-            equation=operandOne;
         }else if(output.innerText==operandTwo && btn.id=="decimal"){
                 operandTwo+=".";
-                output.innerText=operandTwo;
-                //equation.slice(0,-1);
-                equation+=operandTwo;    
-        }  
-        
-        if(operandTwo != "" && btn.id == "operator"){
+                output.innerText=operandTwo;    
+        }
+
+        if(operandTwo != "" && answer !="" && btn.id == "operator"){
+            equation=answer + operator + operandTwo;
+            console.log(equation);
+            answer=evaluate(equation,operator);
+            operator=btn.innerText;
+            equation=answer;
+            equation+=operator;
+            output.innerText=answer;
+            operandOne="";
+            operandTwo="";
+        }else if(operandTwo != "" && btn.id == "operator"){
+            equation=operandOne + operator + operandTwo;
             answer=evaluate(equation,operator);
             operator=btn.innerText;
             equation=answer;
@@ -44,17 +55,25 @@ btns.forEach((btn) => {
                 operandTwo="";
                 output.innerText=answer;
                 operator=btn.innerText;
-                equation+=btn.innerText;
+              
         }else if(btn.id == "operator" ){
             output.innerText=operandOne;
              operator=btn.innerText;
-             equation+=btn.innerText;
         }
 
        
 
-
-        if(btn.id == "equals"){
+        if(answer != "" && btn.id== "equals"){
+            equation=answer+operator+operandTwo;
+            console.log(equation);
+            answer=evaluate(equation,operator);
+            equation=answer;
+            equation+=operator;
+            output.innerText=answer;
+            operandOne="";
+            operandTwo="";
+        }else if(btn.id == "equals"){
+            equation=operandOne + operator + operandTwo;
             answer=evaluate(equation,operator);  
             equation=answer;
             output.innerText=answer;
@@ -86,13 +105,13 @@ function evaluate(equation, operator){
     console.log(arr);
 
     if(operator==='+'){
-        return add(parseInt(arr[0]),parseInt(arr[1]));
+        return add(parseFloat(arr[0]),parseFloat(arr[1])).toFixed(2);
     }else if(operator==='-'){
-        return subtract(parseInt(arr[0]),parseInt(arr[1]));
+        return subtract(parseFloat(arr[0]),parseFloat(arr[1])).toFixed(2);
     }else if(operator==='x'){
-        return multiply(parseInt(arr[0]),parseInt(arr[1]));
+        return multiply(parseFloat(arr[0]),parseFloat(arr[1])).toFixed(2);
     }else if(operator=="/"){
-        return divide(parseInt(arr[0]),parseInt(arr[1]));
+        return divide(parseFloat(arr[0]),parseFloat(arr[1])).toFixed(2);
     }
     
 }
